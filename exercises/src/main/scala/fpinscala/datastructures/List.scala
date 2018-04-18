@@ -56,8 +56,21 @@ object List { // `List` companion object. Contains functions for creating and wo
   def product2(ns: List[Double]) =
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
-
-  def tail[A](l: List[A]): List[A] = ???
+  /*
+   The solution consists in pattern matching on the List scrutinee and returning the tail part
+   of the Cons data constructor matched subexpressions.
+   This operation is achieved in constant time since it only (always) involves removing the first element
+   of the list.
+  */
+  def tail[A](l: List[A]): List[A] = l match {
+    // Since we are only interested in having the tail part as a result (i.e : the head-matched part will not be
+    // used on the right-hand side of =>), we match the head of the list with _, which is the match-all pattern
+    // (as previously seen) to convey the idea that we are not (that) interested in using its value after
+    // => even though theoretically, we could. _ is just a 'convention' for naming matched expressions that are not
+    // essential for processing the value to be returned for the matched case.
+    case Cons(_, t) => t
+    case Nil => Nil
+  }
 
   def setHead[A](l: List[A], h: A): List[A] = ???
 
