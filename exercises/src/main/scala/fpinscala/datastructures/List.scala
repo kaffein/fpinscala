@@ -29,7 +29,12 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Cons(x, Cons(2, Cons(4, _))) => x
     case Nil => 42
     case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
+    // Let's note however that the scrutinee could have been matched by the following 'case Cons(h, t)' as well (if the previous line were not there ^^)
+    // which could have resulted in the value 15 being returned (it is an arithmetic series of progression 1 with 5 elements)
+    // but since pattern matching stops at the first match, the previous case has been retained
     case Cons(h, t) => h + sum(t)
+    // Same here, _ being a 'match all' expression, 'case _' can also be matched against the scrutinee List(1,2,3,4,5) but the way
+    // the pattern matching mechanism works under the hood prevents it from going further than the 'case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y'
     case _ => 101
   }
 
