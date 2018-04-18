@@ -23,6 +23,8 @@ object List { // `List` companion object. Contains functions for creating and wo
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
 
+  // The result will be 3 since the 'first' case that matches the scrutinee List(1,2,3,4,5)
+  // is Cons(x, Cons(y, Cons(3, Cons(4, _))))
   val x = List(1,2,3,4,5) match {
     case Cons(x, Cons(2, Cons(4, _))) => x
     case Nil => 42
