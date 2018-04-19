@@ -72,7 +72,20 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Nil => Nil
   }
 
-  def setHead[A](l: List[A], h: A): List[A] = ???
+  /*
+   Same here, we use pattern matching to match and deconstruct the subexpressions from the original list. Since we
+   would like to replace the header with a new value (i.e : we don't even need its original value to be used for processing the
+    new header value), we do not need to match its old value, hence the use of '_' to catch it.
+    On the other hand, the tail of the original list should remain the same, hence the use of a named variable (here t) to
+    catch its value because it will be used on the right-hand side of => to produce the list new value with the new header.
+    The only thing remaining is to return a new list via the Cons data constructor using the new header value and the retained
+    original list tail.
+   */
+  def setHead[A](l: List[A], h: A): List[A] = l match {
+    case Cons(_, t) => Cons(h, t)
+    // We use this case to handle the case where we have a nil list
+    case Nil => sys.error("Can not add an element to a nil list")
+  }
 
   def drop[A](l: List[A], n: Int): List[A] = ???
 
