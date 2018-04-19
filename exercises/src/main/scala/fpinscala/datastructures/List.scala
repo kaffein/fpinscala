@@ -87,7 +87,24 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Nil => sys.error("Can not add an element to a nil list")
   }
 
-  def drop[A](l: List[A], n: Int): List[A] = ???
+  /*
+   Using the tail function defined earlier, we can generalize its use for recursively emulating the dropping of n elements
+   from the head of a list with pattern matching.
+   In fact, dropping an element from a list consists in pattern matching its different constituents based on the Cons data
+   constructor we defined, which gives the head part and the tail part, and finally returning only the tail part (i.e : the original
+   list minus the first element of the list)
+   */
+  def drop[A](l: List[A], n: Int): List[A] = {
+    // n negative or zero means no op
+    if (n <= 0) l
+    else {
+      l match {
+        case Cons(_, t) => drop(t, n - 1)
+        // again, this is here to handle the corner case of a Nil list
+        case Nil => Nil
+      }
+    }
+  }
 
   def dropWhile[A](l: List[A], f: A => Boolean): List[A] = ???
 
