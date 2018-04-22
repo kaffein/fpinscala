@@ -156,6 +156,20 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Nil => Nil
   }
 
+  /*
+    We can also introduce a little implementation variation to the dropWhile function.
+    In Scala, it is possible to pattern-match the scrutinee and use a 'guard' expression, a condition expression introduced by if, as an additional condition
+    layer based on value, to the purely structural pattern matching introduced by 'case'.
+    Therefore, it is possible to have pattern-matching based on :
+     - structure-only : introduced by the 'case'-s
+     - value : which is an ADDITION to the structural pattern matching, introduced by the 'guard' expression
+  */
+  @tailrec
+  def dropWhile2[A](l: List[A], f: A => Boolean): List[A] = l match {
+    case Cons(h, t) if f(h) => dropWhile2(t, f) // This function is also tail-recursive, hence the use of @tailrec
+    case _ => l
+  }
+
   def init[A](l: List[A]): List[A] = ???
 
   def length[A](l: List[A]): Int = ???
