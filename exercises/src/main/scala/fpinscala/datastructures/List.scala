@@ -141,7 +141,20 @@ object List { // `List` companion object. Contains functions for creating and wo
     loop(l, n)
   }
 
-  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = ???
+  /*
+    The idea of looping through a collection construct and have a predicate as a condition to continue(or not) looping through it naturally and intuitively
+    lead (like in the previous example) to the combination of pattern-matching and recursion as means of achieving the result.
+    Pattern-matching allows the deconstruction of the expression to be looped through, giving the different components of the expression and the predicate
+    will be used in the case of a matched pattern to trigger the recursion (i.e loop continuation) and processing of the remaining/processed list or not,
+    which in the latter case returns the last processed value of the list from the recursion pipeline.
+  */
+  @tailrec
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
+    // This function is a tail-recursive one since we only have dropWhile(t, f) as the last instruction in the first case, hence the use of the @tailrec
+    // annotation
+    case Cons(h, t) => if (f(h)) dropWhile(t, f) else l
+    case Nil => Nil
+  }
 
   def init[A](l: List[A]): List[A] = ???
 
