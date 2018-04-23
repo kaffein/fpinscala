@@ -170,7 +170,23 @@ object List { // `List` companion object. Contains functions for creating and wo
     case _ => l
   }
 
-  def init[A](l: List[A]): List[A] = ???
+
+  /*
+    Implementing init consists in recursively building a new list from each element of the list by pattern-matching it, taking at each step the head part of the
+    pattern-matched value as a new element to be added to the new list, and repeating the operation (via recursion) on the remaining of the list. The recursion stops
+    when the pattern-matched element is the last item in the list -- an element having Nil as its tail, which is not to be taken as an element to be added to the
+    list (here catched by the Cons(_, Nil) pattern).
+
+    This function can not be implemented in constant time because it involves traversing the entire list from head to the last element in order to build the
+    new list. Furthermore, the function is not tail-recursive since it involves doing a Cons operation in addition to the call to init on the remaining of the
+    list, at each step. It then consumes a stack frame for each step of the recursion and may lead to the infamous StackOverflow error to be thrown if the list is large
+    enough.
+  */
+  def init[A](l: List[A]): List[A] = l match {
+    case Cons(h, t) => Cons(h, init(t))
+    case Cons(_, Nil) => Nil
+    case Nil => sys.error("Can not invoke init on a empty list")
+  }
 
   def length[A](l: List[A]): Int = ???
 
