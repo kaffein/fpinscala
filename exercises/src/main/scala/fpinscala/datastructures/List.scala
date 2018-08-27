@@ -170,23 +170,32 @@ object List { // `List` companion object. Contains functions for creating and wo
     case _ => l
   }
 
+  /*
+   Given the implementation of the List data structure (Singly-linked list), retrieving a list consisting of all but the last element from a List is not possible
+   in `constant time`. In fact, when we want to replace the tail of a singly-linked list, we deconstruct the list allowing direct access to its `head` and
+   `tail` elements.
+   But since the `tail` element is still a nested data structure (nested `Cons`) consisting in the remaining of the list, we have to `recursively` deconstruct
+   the `tail` element into a successive stack of `Cons` elements and retain each `Cons` element as we go through, until reaching the one whose `tail` is
+   pointing to `Nil` i.e the last `Cons` element not to be taken into account when computing `init`. We then return all the `Cons` elements that we have
+   accumulated so far into a List as the result of `init`.
+
+   Hence, the time it takes to compute `init` is then `proportional` to the size of the List.
+   */
+  def init[A](l: List[A]): List[A] = l match {
+    case Nil => sys.error("Can not compute init of an empty list")
+    case Cons(_, Nil) => l
+    case Cons(h, t) => Cons(h, init(t))
+  }
 
   /*
-    Implementing init consists in recursively building a new list from each element of the list by pattern-matching it, taking at each step the head part of the
-    pattern-matched value as a new element to be added to the new list, and repeating the operation (via recursion) on the remaining of the list. The recursion stops
-    when the pattern-matched element is the last item in the list -- an element having Nil as its tail, which is not to be taken as an element to be added to the
-    list (here catched by the Cons(_, Nil) pattern).
+   This function can not be implemented in constant time because it involves traversing the entire list from head to the last element in order to build the
+   new list. Furthermore, the function is not tail-recursive since it involves doing a Cons operation in addition to the call to init on the remaining of the
+   list, at each step. It then consumes a stack frame for each step of the recursion and may lead to the infamous StackOverflow error to be thrown if the list is large
+   enough.
 
-    This function can not be implemented in constant time because it involves traversing the entire list from head to the last element in order to build the
-    new list. Furthermore, the function is not tail-recursive since it involves doing a Cons operation in addition to the call to init on the remaining of the
-    list, at each step. It then consumes a stack frame for each step of the recursion and may lead to the infamous StackOverflow error to be thrown if the list is large
-    enough.
-  */
-  def init[A](l: List[A]): List[A] = l match {
-    case Cons(h, t) => Cons(h, init(t))
-    case Cons(_, Nil) => Nil
-    case Nil => sys.error("Can not invoke init on a empty list")
-  }
+   Writing purely functional data structures supporting different operations efficiently is about finding clever ways to exploit data sharing. Sometimes,
+   trade-offs have to be made.
+   */
 
   def length[A](l: List[A]): Int = ???
 
