@@ -64,6 +64,17 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
   /*
+   EXERCISE 3.8
+   Passing Nil and `Cons` to `foldRight` like this :
+   foldRight(List(1,2,3), Nil:List[Int])(Cons(_,_)) would give the following result after the substitution steps :
+
+   Cons(1, foldRight(List(2, 3), Nil)(Cons(_, _)) << but since List(2, 3) = Cons(2, Cons(3, Nil)), proceeding with the next substitution step gives
+   Cons(1, foldRight(Cons(2, Cons(3, Nil)), Nil)(Cons(_,_))) << Forgot the type hint for foldRight `z` param at first though so the compiler complained because
+                                                             << it could not infer the type. It would have been okay if we had the parameters in two separate groups
+   Cons(1, foldRight(Cons(2, Cons(3, Nil)), Nil: List[Int])(Cons(_,_))) << Added the type hint `List[Int]` to help the compiler with type inference
+  */
+
+  /*
    The solution consists in pattern matching on the List scrutinee and returning the tail part
    of the Cons data constructor matched subexpressions.
    This operation is achieved in constant time since it only (always) involves removing the first element
