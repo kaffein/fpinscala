@@ -72,6 +72,15 @@ object List { // `List` companion object. Contains functions for creating and wo
    Cons(1, foldRight(Cons(2, Cons(3, Nil)), Nil)(Cons(_,_))) << Forgot the type hint for foldRight `z` param at first though so the compiler complained because
                                                              << it could not infer the type. It would have been okay if we had the parameters in two separate groups
    Cons(1, foldRight(Cons(2, Cons(3, Nil)), Nil: List[Int])(Cons(_,_))) << Added the type hint `List[Int]` to help the compiler with type inference
+
+
+   If we proceed with the substitution steps as we go through the recursion :
+   foldRight(List(1,2,3), Nil:List[Int])(Cons(_,_))
+
+   Cons(1, foldRight(List(2, 3, Nil)(Cons(_, _)))
+   Cons(1, Cons(2, foldRight(List(3), Nil)(Cons(_, _))))
+   Cons(1, Cons(2, Cons(3, foldRight(Nil, Nil)(Cons(_, _))))) << but since `foldRight` parameter `as` (scrutinee) matches Nil in foldRight(Nil, Nil)(Cons(_, _)), foldRight returns Nil
+   Cons(1, Cons(2, Cons(3, Nil))) >> we then get back the original List and the whole process seemed like an `identity` function
   */
 
   /*
