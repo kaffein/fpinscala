@@ -55,6 +55,11 @@ object List { // `List` companion object. Contains functions for creating and wo
   def sum2(ns: List[Int]) =
     foldRight(ns, 0)((x,y) => x + y)
 
+  /*
+   EXERCISE 3.7
+  `product` using foldRight, like `sum`, does not halt the recursion and return early if it encounters a 0.0 because the way `foldRight` is implemented, the recursion
+   has to be carried out to the end of the list before it begins collapsing it.
+  */
   def product2(ns: List[Double]) =
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
