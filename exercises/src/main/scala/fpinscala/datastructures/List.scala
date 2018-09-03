@@ -51,6 +51,11 @@ object List { // `List` companion object. Contains functions for creating and wo
       case Nil => z
       case Cons(x, xs) => f(x, foldRight(xs, z)(f))
     }
+  /*
+   EXERCISE 3.10
+   `foldRight` is not `stack-safe` here. In fact, its last action `is not` a call to itself but instead consists in a call to f with `x` as
+   the first argument and `foldRight` as the second argument as shown in the `Cons matched`-case returned value : `f(x, foldRight(xs, z)(f))`
+   */
 
   def sum2(ns: List[Int]) =
     foldRight(ns, 0)((x,y) => x + y)
