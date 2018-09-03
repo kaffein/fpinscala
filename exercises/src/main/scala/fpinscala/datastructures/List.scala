@@ -222,7 +222,26 @@ object List { // `List` companion object. Contains functions for creating and wo
    trade-offs have to be made.
    */
 
-  def length[A](l: List[A]): Int = ???
+  /*
+   First, a little reminder of how we have implemented `foldRight` so far :
+
+   def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B = // Utility functions
+    as match {
+      case Nil => z
+      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    }
+
+   Using `foldRight` to process the length of a list would then consists in :
+     - providing the element to be returned when the list matches Nil
+     - providing a function, taking two arguments, to be called to add an element to the result when the list matches Cons
+
+   Since our intent is to process the length of a list, we will go through the recursion and at each step, we will add one (1) until we reach the end of the list
+   which happens when the scrutinee matches Nil. In which case, we return 0 instead of adding 1 since we have exhausted the list. From there, foldRight will
+   have all its parameters resolved and it will begin to collapse the nested expressions by applying the function f.
+     - the element to be returned on Nil match is then : 0 (initial value of our counter)
+     - the function to be used has to `increment` and `accumulate` the value as we go through the recursion giving us the function (a, b) => (1 + b)
+   */
+  def length[A](l: List[A]): Int = foldRight(l, 0)((_, b) => 1 + b)
 
   def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
 
