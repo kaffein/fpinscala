@@ -254,5 +254,35 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Cons(head, tail) => foldLeft(tail, f(z, head))(f)
   }
 
+  /*
+   When implementing `sum`and `product` on `foldLeft`, the `z` parameter will act as an `accumulator` and will be provided with an initial value (also called a `seed`)
+   according to the operation to be implemented : 0 for `sum` and `1.0` for `product`.
+   These values corresponds respectively to the `neutral element` or `identity element` of `sum` and `product`.
+   */
+  def sum3[A](as: List[Int]): Int = foldLeft(as, 0)(_ + _)
+
+  def product3[A](as: List[Double]): Double = foldLeft(as, 1.0)(_ * _)
+
+  /*
+   Same thing for `length`, the `accumulation` function consists in adding 1 to the current value of the accumulator (`b` parameter in (b, a) => b + 1) each time we
+   match a `Cons` (i.e the list is not exhausted yet). The `seed` value of the parameter will be 0 since this is the initial length of an empty List and we keep adding
+   1 to this value until we reach the end of the list, which corresponds to the `Nil`element.
+   */
+  def length3[A](as: List[A]): Int = foldLeft(as, 0)((b, a) => b + 1)
+
+  /*
+   scala> List.product3(List(1, 2, 3, 4))
+   res4: Double = 24.0
+
+   scala> List.product3(List(1, 2, 3, 4, 0))
+   res5: Double = 0.0
+
+   scala> List.sum3(List(1, 2, 3, 4, 0))
+   res6: Int = 10
+
+   scala> List.length3(List(1, 2, 3, 4, 0))
+   res21: Int = 5
+   */
+
   def map[A,B](l: List[A])(f: A => B): List[B] = ???
 }
