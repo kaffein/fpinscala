@@ -284,5 +284,65 @@ object List { // `List` companion object. Contains functions for creating and wo
    res21: Int = 5
    */
 
+  /*
+   When thinking about a `reverse` function, it feels `intuitive` to think about `foldRight` as the best way to implement it. The reason is that the function has to go
+   and realize all the elements of the list, before being able to `Cons` elements backward to constitute the reversed list.
+   However, `foldRight`as we have seen is not stack-safe so instead we are going to try to use `foldLeft` to implement reverse.
+
+   First of all, since what we want is to constitute a list, the `f` function has to be able to just do that, hence it logically is a `Cons` but we don't
+   know yet the details about which value is the tail or head.
+   Second, we have to provide the `z` parameter initial value. Again logically, the `seed` value is an empty List, which can be represented as `List()` since it
+   is equivalent to `Nil` as per the `apply` method implementation seen earlier*.
+
+   *def apply[A](as: A*): List[A] =
+    if (as.isEmpty) Nil
+    else Cons(as.head, apply(as.tail: _*))
+
+   We will then recursively add each element `from the end` to the new reversed list, as we go through the original list.
+   It means that when we encounter the `Nil` element of the original list, we should have already accumulated the reversed list in `z` and we just return it.
+
+   Finally, to get to understand the way we constitute the List using `Cons` : it is first important to notice that as a consequence of what have been said in the second
+   point, we are supposed to build the list backward as we go through, knowing that each element encountered in the original list will be accumulated as the `new head`
+   of the new `reversed` list and the already accumulated values constitute the tail.
+   In other words, each time we encounter `Cons(a, b)` as we go through the list, we have to reverse it so that `b` becomes the head of in the new reversed list, and
+   `a` should be part of the new tail instead.
+
+   Illustration with an example :
+   let's say we have an original List : Cons(1, Cons(2, Cons(3, Nil)))
+   we want to reverse it so as to have : Cons(3, Cons(2, Cons(1, Nil)))
+
+   Here are the successive steps that we have to go through :
+   Initial state of the original list is : acc (or seed) = List() (or Nil), rest = Cons(1, Cons(2, Cons(3, Nil)))
+
+   Cons(1, Cons(2, Cons(3, Nil))) => acc = List(), rest = Cons(1, Cons(2, Cons(3, Nil)))
+
+   Cons(1, Cons(2, Cons(3, Nil))) => acc = Cons(1, acc), rest = Cons(2, Cons(3, Nil))
+   after substitution of acc      => acc = Cons(1, List()), rest = Cons(2, Cons(3, Nil))
+
+
+   Cons(2, Cons(3, Nil))          => acc = Cons(2, acc), rest = Cons(3, Nil)
+   after substitution of acc      => acc = Cons(2, Cons(1, List())), rest = Cons(3, Nil)
+
+   Cons(3, Nil)                   => acc = Cons(3, acc) rest = Nil where acc = Cons(2, Cons(1, Nil))
+   after substitution of acc      => acc = Cons(3, Cons(2, Cons(1, List()))), rest = Nil
+   after substitution of List()   => acc = Cons(3, Cons(2, Cons(1, Nil))), rest = Nil
+   ** WHICH IS THE INTENDED RESULT **
+
+   As seen with the illustration above, when we go through the original list, we take the element encountered and add it to the list accumulator (`z` parameter) to
+   build the new list, ensuring that any new subsequent elements in the recursion are added as the new head as well.
+   Based on the observation of the substitutions at each step of the recursion, we can then conclude that the `f` function implementation has to `Cons`
+   the `head` element matched by `foldLeft`'s `Cons(head, tail)` with the accumulated list in `z` (which has the foldLeft's return type : B) which means that
+   the function `f` has the following implementation :
+
+   (b: B, a: A) => Cons(a, b)
+
+   */
+  def reverse[A](as: List[A]): List[A] = foldLeft(as, List[A]())((b, a) => Cons(a, b))
+
+  /*
+   scala> val rev = List.reverse(List(1, 2, 3, 4))
+   rev: List[Int] = Cons(4,Cons(3,Cons(2,Cons(1,Nil))))
+   */
+
   def map[A,B](l: List[A])(f: A => B): List[B] = ???
 }
